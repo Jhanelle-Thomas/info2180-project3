@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h2>Create User</h2>
+        <button id = "homepage">Homepage</button>
+        <button id = "newMessage">Write New Message</button>
+        <button id = "logout">Logout</button>
+        
+        <form id="newuser" action="scripts/main.php" method="post">
+        	First name: <input id = "fname" type = "text" name ="fname" required/> <br/>
+        	Last name: <input id = "lname" type = "text" name ="lname" required/> <br/>
+        	Username: <input id = "uname" type = "text" name ="uname" required/> <br/> <br/>
+        	Password: <input id = "password" type ="password" name="password" required/> <br/>
+        	<input id = "create" type="submit" name="create" value="Create User"/>
+        </form>
+        
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	    <script id = "js" type="text/javascript" src="adduser.js"></script>
+    </body>
+</html>

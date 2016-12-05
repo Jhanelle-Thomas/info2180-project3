@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h2>Create User</h2>
+        <button id = "homepage">Homepage</button>
+        <button id = "logout">Logout</button>
+        <button id = "addUser">Add User</button>
+        
+        <form id="message" action="scripts/main.php" method="post">
+            To: <input id = "reciever" type = "text" name ="reciever" required/> <br/>
+        	Subject: <input id = "subject" type = "text" name ="subject" required/> <br/>
+        	Body: <input id = "body" type = "text" name ="body" required/> <br/>
+        	<input id = "newMessage" type="submit" name="newMessage" value="Send Message"/>
+        </form>
+        
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	    <script id = "js" type="text/javascript" src="createmessage.js"></script>
+    </body>
+</html>

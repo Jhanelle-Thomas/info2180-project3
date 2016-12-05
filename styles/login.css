@@ -1,0 +1,77 @@
+/*Login css*/
+
+#outline{
+	
+	/*border: 2px solid black;*/
+	height: 520px;
+	width: 900px;
+	margin-top: 40px;
+	margin-left: 230px;
+	/*margin-right: 70px;*/
+	padding: 10px;
+	position: relative;
+	background-color: #2874A6
+	/*background-image: url("Background.jpg");*/
+} 
+
+
+#heading{
+	
+	padding: 50px;
+    height: auto;
+	width: 800px;
+	/*margin: auto;
+	position: relative;*/
+	background-color: #2874A6;
+	font-family: "Arial Black", Gadget, sans-serif/*Verdana, sans-serif*/;
+	font-size: 55px;
+	font-weight: bold;
+	color: white;
+	/*color: #2D8FCF;*/
+	text-align: center;
+	/*border: 2px solid black;*/
+}
+#login{
+    background-color: #0E5482/*#24628A*/;
+	color: white;
+    height:auto;
+    width: 500px;
+    margin: auto;
+    padding: 20px;
+    font-family: Verdana, sans-serif;
+	font-style: italic;
+	margin-top: -1px;
+	 -moz-border-radius:8px; /* Firefox */
+     -webkit-border-radius: 8px; /* Safari, Chrome */
+     border-radius: 8px; /* CSS3 */
+}
+
+input{
+     /*font-size:18pt;*/
+     height:40px;
+     width:300px;
+	 margin-left: 70px;
+	 margin-right: 60px;
+	 margin-top: 4px;
+	 -moz-border-radius:5px; /* Firefox */
+     -webkit-border-radius: 5px; /* Safari, Chrome */
+     border-radius: 5px; /* CSS3 */
+	 padding-left: 4px;
+	 border: 2px solid black;
+}
+
+#logButton{
+	
+	height:40px;
+    width:306px;
+	margin-left: 70px;
+	margin-right: 60px;
+	text-align: center;
+	margin-top: 5px;
+	color:white;
+	background-color: #2874A6;
+	-moz-border-radius:5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Chrome */
+    border-radius: 5px; /* CSS3 */
+	border: 2px solid #2874A6;
+}
