@@ -42,21 +42,20 @@ function finduserid($conn, $name){
     return $result[0]["id"];
 }
 
+//returns true if message is read
 function findread($conn, $m_id){
     $log = "SELECT * FROM Message_read WHERE message_id ='$m_id';";
     $q = $conn->query($log);
     $result = $q->fetchAll(PDO::FETCH_ASSOC);
     if (sizeof($result) > 0) {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 function homepage($conn) {
     echo('<!DOCTYPE html>
         <html>
-        <head>
-        </head>
         <body>
         <h1>Homepage</h1>
         <div id = "controls">
@@ -71,31 +70,63 @@ function homepage($conn) {
     $log = "SELECT * FROM Message WHERE recipient_ids ='$i';";
     $q = $conn->query($log);
     $result = $q->fetchAll(PDO::FETCH_ASSOC);
+    $c = 0;
     
     if (sizeof($result) > 10) {
         for ($x = 0; $x <= 10; $x++) {
+            $c += 1;
+            $id = "mess".$c;
+            
             if (!findread($conn, $result[$x]["id"])) {
-                echo('<a href = "" ><li class = "mess"><b><h3>' . $result[$x]["subject"] . '</h3></b>
-                <b><p>Sender: ' . findusername($conn, $result[$x]["user_id"]) .'</p></b>
-                <b><p>Date: '. $result[$x]["date_sent"] .'</p></b></li></a>');
+                echo('<li><h3 id = '.$id.'><b>' . $result[$x]["subject"] . '</b></h3>
+                <p><b>Sender: ' . findusername($conn, $result[$x]["user_id"]) .'</b></p>
+                <p><b>Date: '. $result[$x]["date_sent"] .'</b></p></li>');
             } else {
-                echo('<li class = "mess"><h3>' . $result[$x]["subject"] . '</h3><p>Sender: ' . findusername($conn, $result[$x]["user_id"]) .'</p>
+                echo('<li><h3 id = '.$id.'>' . $result[$x]["subject"] . '</h3><p>Sender: ' . findusername($conn, $result[$x]["user_id"]) .'</p>
                 <p>Date: '. $result[$x]["date_sent"] .'</p></li>');
             }
+            echo('<script type = "text/javascript">
+                var m = $("#'.$id.'");
+                $(m).click(function() {
+                    $.ajax({
+                        method: "POST",
+                        url: "scripts/main.php",
+                        data: {mesdetsub: "'.$result[$x]["subject"].'", mesdettim: "'.$result[$x]["date_sent"].'" }
+                    }).done(function(response) {
+                        $(result).html(response);
+                    }).fail(function() {
+                        $(result).html("There was a problem with the request.");
+                    });
+                });</script>');
         }
     } else {
         foreach($result as $m) {
-            if (!findread($conn, $result[$x]["id"])) {
-                echo('<li class = "mess"><b><h3>' . $result[$x]["subject"] . '</h3></b>
-                <b><p>Sender: ' . findusername($conn, $result[$x]["user_id"]) .'</p></b>
-                <b><p>Date: '. $result[$x]["date_sent"] .'</p></b></li>');    
+            $c += 1;
+            $id = "mess".$c;
+            if (!findread($conn, $m["id"])) {
+                echo('<li><h3 id = '.$id.'><b>' . $m["subject"] . '</b></h3>
+                <p><b>Sender: ' . findusername($conn, $m["user_id"]) .'</b></p>
+                <p><b>Date: '. $m["date_sent"] .'</b></p></li>');    
             } else {
-                echo('<li class = "mess"><h3>' . $m["subject"] . '</h3><p>Sender: ' . findusername($conn, $m["user_id"]) .'</p>
+                echo('<li><h3 id = '.$id.'>' . $m["subject"] . '</h3><p>Sender: ' . findusername($conn, $m["user_id"]) .'</p>
                 <p>Date: '. $m["date_sent"] .'</p></li>');
             }
+            echo('<script type = "text/javascript">
+                var m = $("#'.$id.'");
+                $(m).click(function() {
+                    $.ajax({
+                        method: "POST",
+                        url: "scripts/main.php",
+                        data: {mesdetsub:"'.$m["subject"].'", mesdettim: "'.$m["date_sent"].'" }
+                    }).done(function(response) {
+                        $(result).html(response);
+                    }).fail(function() {
+                        $(result).html("There was a problem with the request.");
+                    });
+                });</script>');
         }
     }
-    echo('</ul></div><script id = "js" type="text/javascript" src="homepage.js"></script></body></html>');
+    echo('</ul></div><script id = "js" type="text/javascript" src="js/homepage.js"></script></body></html>');
 }
 
 function allmessages($conn){
@@ -120,9 +151,9 @@ function allmessages($conn){
     
     foreach($result as $m) {
         if (!findread($conn, $result[$x]["id"])) {
-            echo('<li class = "mess"><b><h3>' . $result[$x]["subject"] . '</h3></b>
-            <b><p>Sender: ' . findusername($conn, $result[$x]["user_id"]) .'</p></b>
-            <b><p>Date: '. $result[$x]["date_sent"] .'</p></b></li>');   
+            echo('<li class = "mess"><h3><b>' . $result[$x]["subject"] . '</b></h3>
+            <p><b>Sender: ' . findusername($conn, $result[$x]["user_id"]) .'</b></p>
+            <p><b>Date: '. $result[$x]["date_sent"] .'</b></p></li>');  
         } else {
             echo '<li class = "mess"><h3>' . $m["subject"] . '</h3><p>Sender: ' . findusername($conn, $m["user_id"]) .'</p>
             <p>Date: '. $m["date_sent"] .'</p></li>';
@@ -225,6 +256,40 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
 
     //Open Message
+    if(isset($_POST["mesdetsub"])&&!empty(trim($_POST["mesdetsub"]))&&isset($_POST["mesdettim"])&&!empty(trim($_POST["mesdettim"]))) {
+        echo('<!DOCTYPE html>
+        <html>
+        <head>
+        </head>
+        <body>
+        <h1>Message</h1>
+        <div id = "controls">
+        <button id = "homepage">Homepage</button>
+        <button id = "newMessage">Send New Message</button>
+        <button id = "logout">Logout</button>
+        <button id = "addUser">Add User</button>
+        </div>
+        <div>');
+        
+        $i = $_SESSION["id"];
+        $s = $_POST["mesdetsub"];
+        $d = $_POST["mesdettim"];
+        $date = date("y-m-d", time());
+        
+        $log = "SELECT * FROM Message WHERE recipient_ids ='$i' AND subject='$s' AND date_sent='$d';";
+        $q = $conn->query($log);
+        $result = $q->fetchAll(PDO::FETCH_ASSOC);
+        
+        foreach($result as $m){
+            echo('<li><h2>' . $m["subject"] . '</h2><p>Sender: ' . findusername($conn, $m["user_id"]) .'</p>
+            <p>Message: '. $m["message_body"].'</p><p>Date: '. $m["date_sent"] .'</p></li>');
+            
+            $mid = $m["id"];
+            $sql = "INSERT INTO Message_read(message_id,reader_id,date_read) VALUES('$mid','$i','$date');";
+            $conn->exec($sql);
+        }
+        echo('</div><script id = "js" type="text/javascript" src="js/message.js"></script></body></html>');
+    }
     
 
 //#####################################################################################################################################

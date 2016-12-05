@@ -1,25 +1,19 @@
 $(document).ready(function() {
+    var homepage = $("#homepage");
     var addUser = $("#addUser");
     var logout = $("#logout");
     var sendmessage = $("#newMessage");
     var result = $("#result");
-    var messages = document.getElementsByClassName("mess");
     
-    for (var x = 0; x < messages.length; x++) {
-        messages[x].onclick = function() {
-            console.log(messages[x]);
-            /*$.ajax({
-            method: 'POST',
-            url: "main.php",
-            data: {mesdetsub: this }
+    homepage.on("click", function() {
+        $.ajax('scripts/main.php', {
+            method: 'GET'
         }).done(function(response) {
             $(result).html(response);
-            alert("You have been logged out.");
         }).fail(function() {
             $(result).html("There was a problem with the request.");
-        });*/
-        };
-    }
+        });
+    });
     
     addUser.on("click", function() {
         $(result).load("adduser.html");
